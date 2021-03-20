@@ -1,0 +1,23 @@
+{
+    "name": "phpvv/runtime",
+    "description": "VV Runtime",
+    "version": "0.1.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Volodymyr Sarnytskyi",
+            "email": "v00v4n@gmail.com"
+        }
+    ],
+    "autoload": {
+        "files": ["const.php", "func.php"],
+        "classmap": ["VV.php"]
+    },
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "jetbrains/phpstorm-attributes": "^1.0"
+    }
+}
