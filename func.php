@@ -767,6 +767,8 @@ namespace VV {
     }
 
     /**
+     * Creates read string iterator
+     *
      * @param string $data
      * @param int    $blockSize
      *
@@ -787,6 +789,8 @@ namespace VV {
 
 
     /**
+     * Creates read file iterator
+     *
      * @param string|\SplFileObject $file
      * @param int                   $blockSize
      * @param bool                  $autoclose
@@ -823,22 +827,45 @@ namespace VV {
     }
 
     /**
-     * @param $value
+     * Returns true if the $value is a stream resource
+     *
+     * @param mixed $value
      *
      * @return bool
      */
-    function isStream($value): bool {
+    function isStream(mixed $value): bool {
         return is_resource($value) && get_resource_type($value) == 'stream';
     }
 
-    function mapIterable(iterable $iter, \Closure $clbk = null): array {
+    /**
+     * Returns an array containing the results of applying the $callback to the corresponding index of $iterable used as arguments for the callback.
+     *
+     * Callback example:
+     * <code>
+     * $sqrEven = function (int $value, mixed &$key): mixed {
+     *     if ($value % 2) return $key = false; // skip odd
+     *     return $value ** 2; // sqr even
+     * };
+     * </code>
+     *
+     * @param iterable      $iterable The iterable being copied.
+     * @param \Closure|null $callback Callback to apply to each element.
+     *                                You can skip element by receiving &$key by reference and assign it to false.
+     * @param bool          $useKeys  Whether to use the iterator element keys as index.
+     *
+     * @return array
+     */
+    function mapIterable(iterable $iterable, \Closure $callback = null, bool $useKeys = true): array {
         $array = [];
-        foreach ($iter as $v) {
-            $skip = false;
-            $result = $clbk ? $clbk($v, $skip) : $v;
-            if ($skip) continue;
+        foreach ($iterable as $key => $value) {
+            $result = $callback ? $callback($value, $key) : $value;
+            if ($key === false) continue; // `&$key = false` - inside callback
 
-            $array[] = $result;
+            if ($useKeys) {
+                $array[$key] = $result;
+            } else {
+                $array[] = $result;
+            }
         }
 
         return $array;
